@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(STAFF)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  productsCreated Product[]
+  logs            AuditLog[]
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[]
+}
+
+model Supplier {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[]
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  sku         String   @unique
+  description String?
+  price       Int
+  stock       Int      @default(0)
+  minStock    Int      @default(0)
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  categoryId  Int
+  supplierId  Int?
+  createdById Int?
+
+  category  Category  @relation(fields: [categoryId], references: [id])
+  supplier  Supplier? @relation(fields: [supplierId], references: [id])
+  createdBy User?     @relation(fields: [createdById], references: [id])
+
+  stockTransactions StockTransaction[]
+}
+
+model StockTransaction {
+  id        Int             @id @default(autoincrement())
+  type      TransactionType
+  quantity  Int
+  note      String?
+  createdAt DateTime        @default(now())
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  entity    String
+  entityId  Int
+  message   String?
+  userId    Int?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum TransactionType {
+  IN
+  OUT
+}
