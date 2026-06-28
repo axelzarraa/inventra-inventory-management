@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUserFromToken } from "@/lib/auth";
 import { createAuditLog } from "@/lib/audit";
+import { Prisma } from "@prisma/client"; //
 
 export const runtime = "nodejs";
 
@@ -85,7 +86,7 @@ if (!user) {
         ? product.stock + transactionQuantity
         : product.stock - transactionQuantity;
 
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
   const transaction = await tx.stockTransaction.create({
     data: {
       productId: Number(productId),
