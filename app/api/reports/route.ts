@@ -3,6 +3,17 @@ import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
+type ProductWithRelations = {
+  id: number;
+  name: string;
+  sku: string;
+  price: number;
+  stock: number;
+  minStock: number;
+  category: { name: string };
+  supplier?: { name: string } | null;
+};
+
 export async function GET() {
   try {
     const products = await prisma.product.findMany({
@@ -17,25 +28,24 @@ export async function GET() {
 
     const totalProducts = products.length;
 
-    const totalStock = products.reduce((total, product) => {
+    const totalStock = products.reduce((total: number, product: ProductWithRelations) => {
       return total + product.stock;
     }, 0);
 
-    const totalInventoryValue = products.reduce((total, product) => {
+    const totalInventoryValue = products.reduce((total: number, product: ProductWithRelations) => {
       return total + product.price * product.stock;
     }, 0);
 
-    const lowStockProducts = products.filter((product) => {
+    const lowStockProducts = products.filter((product: ProductWithRelations) => {
       return product.stock <= product.minStock && product.stock > 0;
     });
 
-    const outOfStockProducts = products.filter((product) => {
+    const outOfStockProducts = products.filter((product: ProductWithRelations) => {
       return product.stock === 0;
     });
 
-    const reportItems = products.map((product) => {
+    const reportItems = products.map((product: ProductWithRelations) => {
       const stockValue = product.price * product.stock;
-
       return {
         id: product.id,
         name: product.name,
@@ -71,12 +81,8 @@ export async function GET() {
     });
   } catch (error) {
     console.error("GET_REPORTS_ERROR", error);
-
     return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to fetch inventory report",
-      },
+      { success: false, message: "Failed to fetch inventory report" },
       { status: 500 }
     );
   }
