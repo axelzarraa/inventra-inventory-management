@@ -3,6 +3,15 @@ import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
+type Product = {
+  id: number;
+  name: string;
+  sku: string;
+  stock: number;
+  minStock: number;
+  createdAt: Date;
+};
+
 export async function GET() {
   try {
     const [
@@ -15,35 +24,25 @@ export async function GET() {
       prisma.product.count(),
       prisma.category.count(),
       prisma.supplier.count(),
-
       prisma.product.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy: { createdAt: "desc" },
       }),
-
       prisma.stockTransaction.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy: { createdAt: "desc" },
         take: 5,
         include: {
           product: {
-            select: {
-              id: true,
-              name: true,
-              sku: true,
-            },
+            select: { id: true, name: true, sku: true },
           },
         },
       }),
     ]);
 
-    const totalStock = products.reduce((total: number, product: { stock: number }) => {
+    const totalStock = products.reduce((total: number, product: Product) => {
       return total + product.stock;
     }, 0);
 
-    const lowStockProducts = products.filter((product) => {
+    const lowStockProducts = products.filter((product: Product) => {
       return product.stock <= product.minStock;
     });
 
@@ -51,27 +50,23 @@ export async function GET() {
       success: true,
       message: "Dashboard summary fetched successfully",
       data: {
-      totalProducts,
-      totalCategories,
-      totalSuppliers,
-      totalStock,
-      lowStockCount: lowStockProducts.length,
-      lowStockProducts,
-      recentTransactions,
-      stockChartData: products.map((product) => ({
-        name: product.name,
-        stock: product.stock,
-      })),
-    },
+        totalProducts,
+        totalCategories,
+        totalSuppliers,
+        totalStock,
+        lowStockCount: lowStockProducts.length,
+        lowStockProducts,
+        recentTransactions,
+        stockChartData: products.map((product: Product) => ({
+          name: product.name,
+          stock: product.stock,
+        })),
+      },
     });
   } catch (error) {
     console.error("GET_DASHBOARD_ERROR", error);
-
     return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to load dashboard",
-      },
+      { success: false, message: "Failed to load dashboard" },
       { status: 500 }
     );
   }
