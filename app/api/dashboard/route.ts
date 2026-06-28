@@ -39,7 +39,7 @@ export async function GET() {
       }),
     ]);
 
-    const totalStock = products.reduce((total: number, product) => {
+    const totalStock = products.reduce((total: number, product: { stock: number }) => {
       return total + product.stock;
     }, 0);
 
