@@ -4,7 +4,7 @@ Inventra is a fullstack inventory management web application built to help busin
 
 ## Live Demo
 
-[https://inventra-inventory-management-3yub-lgzb23if5-xellzarra.vercel.app](https://inventra-inventory-management-3yub-lgzb23if5-xellzarra.vercel.app)
+[https://inventra-inventory-management-3yub-lgzb23if5-xellzarra.vercel.app](https://inventra-inventory-management-3yub.vercel.app)
 
 **Demo Credentials**
 
@@ -31,9 +31,9 @@ Inventra is a fullstack inventory management web application built to help busin
 | Frontend   | Next.js 16, TypeScript, Tailwind CSS    |
 | Backend    | Next.js API Routes (App Router)         |
 | ORM        | Prisma v7                               |
-| Database   | MySQL hosted on Railway                 |
+| Database   | MySQL hosted on Aiven                 |
 | Auth       | JWT + bcryptjs                          |
-| Deployment | Vercel (app) + Railway (database)       |
+| Deployment | Vercel (app) + Aiven (database)       |
 
 ## Project Structure
 
@@ -89,7 +89,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## Deployment
 
-This project is deployed using Vercel for the Next.js application and Railway for the MySQL database. The following environment variables are required on Vercel:
+This project is deployed using Vercel for the Next.js application and Aiven for the MySQL database. The following environment variables are required on Vercel:
 
 ```env
 DATABASE_URL=mysql://...
@@ -98,7 +98,7 @@ JWT_SECRET=your-secret-key
 
 ## What I Learned
 
-Building Inventra gave me hands-on experience with fullstack architecture using Next.js App Router, ORM-based database management with Prisma v7, implementing JWT authentication with role-based access control, connecting and deploying a cloud MySQL database on Railway, and managing a full production deployment workflow with Vercel and GitHub.
+Building Inventra gave me hands-on experience with fullstack architecture using Next.js App Router, ORM-based database management with Prisma v7, implementing JWT authentication with role-based access control, connecting and deploying a cloud MySQL database on Aiven, and managing a full production deployment workflow with Vercel and GitHub.
 
 ## Author
 
