@@ -4,7 +4,7 @@ Inventra is a fullstack inventory management web application built to help busin
 
 ## Live Demo
 
-[https://inventra-inventory-management-3yub-lgzb23if5-xellzarra.vercel.app](https://inventra-inventory-management-3yub.vercel.app)
+[https://inventra-inventory-management-3yub.vercel.app](https://inventra-inventory-management-3yub.vercel.app)
 
 **Demo Credentials**
 
