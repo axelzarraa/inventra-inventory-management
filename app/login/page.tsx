@@ -23,40 +23,43 @@ export default function LoginPage() {
     }));
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function login(email: string, password: string) {
+  setLoading(true);
+  setError("");
 
-    setLoading(true);
-    setError("");
+  try {
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-    try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: form.email,
-          password: form.password,
-        }),
-      });
+    const result = await response.json();
 
-      const result = await response.json();
-
-      if (!result.success) {
-        setError(result.message || "Login gagal.");
-        return;
-      }
-
-      router.push("/");
-      router.refresh();
-    } catch (error) {
-      console.error("LOGIN_PAGE_ERROR", error);
-      setError("Terjadi kesalahan saat login.");
-    } finally {
-      setLoading(false);
+    if (!result.success) {
+      setError(result.message || "Login gagal.");
+      return;
     }
+
+    router.push("/");
+    router.refresh();
+  } catch (error) {
+    console.error("LOGIN_PAGE_ERROR", error);
+    setError("Terjadi kesalahan saat login.");
+  } finally {
+    setLoading(false);
   }
+}
+
+function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  event.preventDefault();
+  login(form.email, form.password);
+}
+
+function handleDemoLogin(email: string, password: string) {
+  setForm({ email, password });
+  login(email, password);
+}
 
   return (
     <main className="auth-shell">
@@ -94,10 +97,32 @@ export default function LoginPage() {
             />
           </div>
 
-          <button type="submit" className="auth-button" disabled={loading}>
+                    <button type="submit" className="auth-button" disabled={loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        <div className="demo-login">
+          <p>atau</p>
+          <div className="demo-login-buttons">
+            <button
+              type="button"
+              className="auth-button"
+              disabled={loading}
+              onClick={() => handleDemoLogin("admin@inventra.com", "admin123")}
+            >
+              Masuk sebagai Admin
+            </button>
+            <button
+              type="button"
+              className="auth-button"
+              disabled={loading}
+              onClick={() => handleDemoLogin("staff@inventra.com", "staff123")}
+            >
+              Masuk sebagai Staff
+            </button>
+          </div>
+        </div>
       </section>
     </main>
   );
